@@ -11,58 +11,25 @@ import (
 	"time"
 )
 
-// Readiness is to check if server is up
-func (u *HTTPHandler) Readiness(c *gin.Context) {
-	data := "server is up and running"
 
-	// healthcheck
-	util.Response(c, "Ready to go", 200, data, nil)
-}
 
-// Create a user
-func (u *HTTPHandler) CreateUser(c *gin.Context) {
-	var user *models.User
-	if err := c.ShouldBind(&user); err != nil {
-		util.Response(c, "invalid request", 400, "bad request body", nil)
-		return
-	}
 
-	//validate user email
-	if  !util.IsValidEmail(user.Email) {
-		util.Response(c, "Invalid email", 400,  "Bad request body", nil)
-		return
-	}
 
-	//validate user password
-
-	//check if user already exists
-	_, err := u.Repository.FindUserByEmail(user.Email)
-	if err == nil {
-		
-		util.Response(c, "User already exists", 400, "Bad request body", nil)
-		return
-	}
-
-	//persist information in the data base
-	err = u.Repository.CreateUser(user)
-	if err != nil {
-		util.Response(c, "user not created", 400, err.Error(), nil)
-		return
-	}
-	util.Response(c, "user created", 200, "success", nil)
-}
-
+//Create a Login System for user
 // login
-func (u *HTTPHandler) LoginUser(c *gin.Context) {
+
+func (u *HTTPHandler) NewLoginUser(c *gin.Context) {
 	var loginRequest *models.LoginRequest
 	if err := c.ShouldBind(&loginRequest); err != nil {
 		util.Response(c, "invalid request", 400, "bad request body", nil)
 		return
 	}
+	
 	if loginRequest.Email == "" || loginRequest.Password == "" {
 		util.Response(c, "Please enter your email or password", 400, "bad request body", nil)
 		return
 	}
+
 
 	user, err := u.Repository.FindUserByEmail(loginRequest.Email)
 	if err != nil {
@@ -80,6 +47,15 @@ func (u *HTTPHandler) LoginUser(c *gin.Context) {
 		return
 	}
 
+	hashPass, err := util.HashPassword(user.Password)
+	if err != nil {
+		util.Response(c, "could not hash password", 500, "internal server error", nil)
+		return
+	}
+
+	user.Password = hashPass
+
+	
 	if user.Password != loginRequest.Password {
 		user.LoginCounter++
 		err := u.Repository.UpdateUser(user)
@@ -115,38 +91,3 @@ func (u *HTTPHandler) LoginUser(c *gin.Context) {
 		"refresh_token": refreshToken,
 	}, nil)
 }
-
-// call a protected route
-func (u *HTTPHandler) GetUserByEmail(c *gin.Context) {
-	_, err := u.GetUserFromContext(c)
-	if err != nil {
-		util.Response(c, "User not logged in", 500, "user not found", nil)
-		return
-	}
-
-	email := c.Query("email")
-
-	if email == "" {
-		util.Response(c, "email is required", 400, "email is required", nil)
-		return
-	}
-
-	user, err := u.Repository.FindUserByEmail(email)
-	if err != nil {
-		util.Response(c, "user not fount", 500, "user not found", nil)
-		return
-	}
-
-	util.Response(c, "user found", 200, user, nil)
-}
-
-//query parameter
-//path parameter
-
-//100 ---- informtional
-//200 ---- success 200, 201, 202
-//300 ---- redirect
-//400 ---- client error
-//500 ----- server error
-
-//syntax error
