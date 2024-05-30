@@ -11,8 +11,6 @@ type Admin struct {
 	Email        string `json:"email"`
 	Phone        string `json:"phone"`
 	Address      string `json:"address"`
-	LoginCounter int    `json:"login_counter"`
-	IsLocked     bool   `json:"is_locked"`
 }
 
 type AdminLoginRequest struct {

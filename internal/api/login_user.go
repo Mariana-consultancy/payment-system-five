@@ -1,24 +1,21 @@
 package api
 
 import (
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
 	"payment-system-one/internal/middleware"
 	"payment-system-one/internal/models"
 	"payment-system-one/internal/util"
-	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
-
-
-
-
 
 //Create a Login System for user
 // login
 
-func (u *HTTPHandler) NewLoginUser(c *gin.Context) {
+func (u *HTTPHandler) LoginUser(c *gin.Context) {
 	var loginRequest *models.LoginRequest
 	if err := c.ShouldBind(&loginRequest); err != nil {
 		util.Response(c, "invalid request", 400, "bad request body", nil)
@@ -36,34 +33,8 @@ func (u *HTTPHandler) NewLoginUser(c *gin.Context) {
 		util.Response(c, "user does not exist", 404, "user not found", nil)
 		return
 	}
-	if user.LoginCounter >= 3 {
-		user.IsLocked = true
-		user.UpdatedAt = time.Now()
-		err = u.Repository.UpdateUser(user)
-		if err != nil {
-			return
-		}
-		util.Response(c, "Your account has been lock after 3 failed attempt, contact customer care for assistance", 200, "success", nil)
-		return
-	}
-
-	hashPass, err := util.HashPassword(user.Password)
-	if err != nil {
-		util.Response(c, "could not hash password", 500, "internal server error", nil)
-		return
-	}
-
-	user.Password = hashPass
-
-	
-	if user.Password != loginRequest.Password {
-		user.LoginCounter++
-		err := u.Repository.UpdateUser(user)
-		if err != nil {
-			util.Response(c, "internal server error", 500, "user not found", nil)
-			return
-		}
-		util.Response(c, "password mismatch", 404, "user not found", nil)
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Password),[]byte(loginRequest.Password)); err != nil {
+		util.Response(c, "invalid email pr password", 400, "Invalidemail or password", nil)
 		return
 	}
 
@@ -91,3 +62,39 @@ func (u *HTTPHandler) NewLoginUser(c *gin.Context) {
 		"refresh_token": refreshToken,
 	}, nil)
 }
+
+// call a protected route
+func (u *HTTPHandler) GetUserByEmail(c *gin.Context) {
+	_, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "User not logged in", 500, "user not found", nil)
+		return
+	}
+
+	email := c.Query("email")
+
+	if email == "" {
+		util.Response(c, "email is required", 400, "email is required", nil)
+		return
+	}
+
+	user, err := u.Repository.FindUserByEmail(email)
+	if err != nil {
+		util.Response(c, "user not fount", 500, "user not found", nil)
+		return
+	}
+
+	util.Response(c, "user found", 200, user, nil)
+}
+
+//query parameter
+//path parameter
+
+//100 ---- informtional
+//200 ---- success 200, 201, 202
+//300 ---- redirect
+//400 ---- client error
+//500 ----- server error
+
+//syntax error
+

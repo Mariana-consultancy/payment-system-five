@@ -9,8 +9,10 @@ import (
 	"payment-system-one/internal/middleware"
 	"payment-system-one/internal/models"
 	"payment-system-one/internal/util"
-	"time"
+	"golang.org/x/crypto/bcrypt"
 )
+	
+
 
 
 
@@ -36,35 +38,14 @@ func (u *HTTPHandler) LoginAdmin(c *gin.Context) {
 		util.Response(c, "admin does not exist", 404, "admin not found", nil)
 		return
 	}
-	if admin.LoginCounter >= 3 {
-		admin.IsLocked = true
-		admin.UpdatedAt = time.Now()
-		err = u.Repository.UpdateAdmin(admin)
-		if err != nil {
-			return
-		}
-		util.Response(c, "Your account has been lock after 3 failed attempt, contact customer care for assistance", 200, "success", nil)
+
+	if err = bcrypt.CompareHashAndPassword([]byte(admin.Password),[]byte(adminloginRequest.Password)); err != nil {
+		util.Response(c, "invalid email pr password", 400, "Invalidemail or password", nil)
 		return
 	}
 
-	hashPass, err := util.HashPassword(admin.Password)
-	if err != nil {
-		util.Response(c, "could not hash password", 500, "internal server error", nil)
-		return
-	}
-
-	admin.Password = hashPass
-
-	if admin.Password != adminloginRequest.Password {
-		admin.LoginCounter++
-		err := u.Repository.UpdateAdmin(admin)
-		if err != nil {
-			util.Response(c, "internal server error", 500, "admin not found", nil)
-			return
-		}
-		util.Response(c, "password mismatch", 404, "admin not found", nil)
-		return
-	}
+	
+	
 
 	//Generate token
 	accessClaims, refreshClaims := middleware.GenerateClaims(admin.Email)
