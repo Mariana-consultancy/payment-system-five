@@ -1,23 +1,15 @@
 package api
 
 import (
-	
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
 	"payment-system-one/internal/middleware"
 	"payment-system-one/internal/models"
 	"payment-system-one/internal/util"
-	"golang.org/x/crypto/bcrypt"
 )
-	
-
-
-
-
-
-
 
 // Create a login system for an Admin
 //Login
@@ -39,13 +31,10 @@ func (u *HTTPHandler) LoginAdmin(c *gin.Context) {
 		return
 	}
 
-	if err = bcrypt.CompareHashAndPassword([]byte(admin.Password),[]byte(adminloginRequest.Password)); err != nil {
+	if err = bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(adminloginRequest.Password)); err != nil {
 		util.Response(c, "invalid email pr password", 400, "Invalidemail or password", nil)
 		return
 	}
-
-	
-	
 
 	//Generate token
 	accessClaims, refreshClaims := middleware.GenerateClaims(admin.Email)
@@ -66,7 +55,7 @@ func (u *HTTPHandler) LoginAdmin(c *gin.Context) {
 	c.Header("refresh_token", *refreshToken)
 
 	util.Response(c, "login successful", http.StatusOK, gin.H{
-		"admin":          admin,
+		"admin":         admin,
 		"access_token":  accessToken,
 		"refresh_token": refreshToken,
 	}, nil)

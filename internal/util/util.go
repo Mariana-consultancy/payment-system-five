@@ -10,11 +10,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const(
+const (
 	min = 11111111
 	max = 99999999
 )
-
 
 // Response is customized to help return all responses need
 func Response(c *gin.Context, message string, status int, data interface{}, errs []string) {
@@ -36,11 +35,10 @@ func HashPassword(password string) (string, error) {
 
 func IsValidEmail(email string) bool {
 	_, err := mail.ParseAddress(email)
-	return err == nil 
+	return err == nil
 }
 
 func GenerateAccountNumber() (int, error) {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max-min+1) + min, nil
 }
-	 

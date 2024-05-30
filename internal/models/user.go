@@ -4,16 +4,15 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	FirstName         string  `json:"first_name"`
-	LastName          string  `json:"last_name"`
-	Password          string  `json:"password"`
-	DateOfBirth       string  `json:"date_of_birth"`
-	Email             string  `json:"email"`
-	AccountNo         int     `json:"account_no"`
-	AvailableBalance  float64 `json:"available_balance"`
-	Phone             string  `json:"phone"`
-	Address           string  `json:"address"`	
-	
+	FirstName        string  `json:"first_name"`
+	LastName         string  `json:"last_name"`
+	Password         string  `json:"password"`
+	DateOfBirth      string  `json:"date_of_birth"`
+	Email            string  `json:"email"`
+	AccountNo        int     `json:"account_no"`
+	AvailableBalance float64 `json:"available_balance"`
+	Phone            string  `json:"phone"`
+	Address          string  `json:"address"`
 }
 
 //type UserProfile struct {
