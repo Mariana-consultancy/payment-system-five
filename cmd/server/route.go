@@ -28,6 +28,8 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 		r.POST("/login", handler.LoginUser)
 		r.POST("/admin/create", handler.CreateAdmin)
 		r.POST("/admin/login", handler.LoginAdmin)
+		r.POST("/funds/transfer",handler.TransferFunds)
+		r.POST("/funds/deposit",handler.DepositFunds)
 	}
 
 	// authorizeAdmin authorizes all authorized users handlers

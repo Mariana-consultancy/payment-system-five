@@ -10,4 +10,6 @@ type Repository interface {
 	FindAdminByEmail(email string) (*models.Admin, error)
 	CreateAdmin(admin *models.Admin) error
 	UpdateAdmin(admin *models.Admin) error
+	FindUserByAccountNumber(account_no int) (*models.User, error)
+	TransferFunds(user *models.User, recipient *models.User, amount float64) error 
 }
