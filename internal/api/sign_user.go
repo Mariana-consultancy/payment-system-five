@@ -1,11 +1,9 @@
 package api
 
 import (
-
+	"github.com/gin-gonic/gin"
 	"payment-system-one/internal/models"
 	"payment-system-one/internal/util"
-	"github.com/gin-gonic/gin"
-
 )
 
 // Create a user
@@ -16,14 +14,14 @@ func (u *HTTPHandler) CreateUser(c *gin.Context) {
 		return
 	}
 	//validate user email
-	if  !util.IsValidEmail(user.Email) {
-		util.Response(c, "Invalid email", 400,  "Bad request body", nil)
+	if !util.IsValidEmail(user.Email) {
+		util.Response(c, "Invalid email", 400, "Bad request body", nil)
 		return
 	}
 	//check if user already exists
 	_, err := u.Repository.FindUserByEmail(user.Email)
 	if err == nil {
-		
+
 		util.Response(c, "User already exists", 400, "Bad request body", nil)
 		return
 	}

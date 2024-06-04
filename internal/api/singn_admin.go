@@ -1,12 +1,12 @@
 package api
 
 import (
+	"github.com/gin-gonic/gin"
 	"payment-system-one/internal/models"
 	"payment-system-one/internal/util"
-	"github.com/gin-gonic/gin"
 )
 
-// Create an admin 
+// Create an admin
 
 func (u *HTTPHandler) CreateAdmin(c *gin.Context) {
 	var admin *models.Admin
@@ -15,14 +15,14 @@ func (u *HTTPHandler) CreateAdmin(c *gin.Context) {
 		return
 	}
 	//validate admin email
-	if  !util.IsValidEmail(admin.Email) {
-		util.Response(c, "Invalid email", 400,  "Bad request body", nil)
+	if !util.IsValidEmail(admin.Email) {
+		util.Response(c, "Invalid email", 400, "Bad request body", nil)
 		return
 	}
 	//check if admin already exists
 	_, err := u.Repository.FindAdminByEmail(admin.Email)
 	if err == nil {
-		
+
 		util.Response(c, "Admin already exists", 400, "Bad request body", nil)
 		return
 	}
@@ -34,7 +34,6 @@ func (u *HTTPHandler) CreateAdmin(c *gin.Context) {
 	}
 
 	admin.Password = hashPass
-
 
 	err = u.Repository.CreateAdmin(admin)
 	if err != nil {

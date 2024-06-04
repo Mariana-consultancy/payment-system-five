@@ -21,19 +21,18 @@ func (u *HTTPHandler) LoginUser(c *gin.Context) {
 		util.Response(c, "invalid request", 400, "bad request body", nil)
 		return
 	}
-	
+
 	if loginRequest.Email == "" || loginRequest.Password == "" {
 		util.Response(c, "Please enter your email or password", 400, "bad request body", nil)
 		return
 	}
-
 
 	user, err := u.Repository.FindUserByEmail(loginRequest.Email)
 	if err != nil {
 		util.Response(c, "user does not exist", 404, "user not found", nil)
 		return
 	}
-	if err = bcrypt.CompareHashAndPassword([]byte(user.Password),[]byte(loginRequest.Password)); err != nil {
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginRequest.Password)); err != nil {
 		util.Response(c, "invalid email pr password", 400, "Invalidemail or password", nil)
 		return
 	}
@@ -97,4 +96,3 @@ func (u *HTTPHandler) GetUserByEmail(c *gin.Context) {
 //500 ----- server error
 
 //syntax error
-

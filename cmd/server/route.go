@@ -37,7 +37,7 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 	authorizeAdmin.Use(middleware.AuthorizeAdmin(repository.FindUserByEmail, repository.TokenInBlacklist))
 	{
 		authorizeAdmin.GET("/user", handler.GetUserByEmail)
-		
+
 	}
 
 	return router
