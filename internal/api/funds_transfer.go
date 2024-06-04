@@ -1,9 +1,10 @@
 package api
 
 import (
+	"payment-system-five/internal/models"
+	"payment-system-five/internal/util"
+
 	"github.com/gin-gonic/gin"
-	"payment-system-one/internal/models"
-	"payment-system-one/internal/util"
 )
 
 // declare request body
@@ -18,9 +19,7 @@ func (u *HTTPHandler) TransferFunds(c *gin.Context) {
 	}
 
 	//Get user from context
-
 	user, err := u.GetUserFromContext(c)
-
 	if err != nil {
 		util.Response(c, "User not logged in", 500, "user not found", nil)
 		return
@@ -33,7 +32,7 @@ func (u *HTTPHandler) TransferFunds(c *gin.Context) {
 	}
 
 	//check if the account number exist
-	recipient, err := u.Repository.FindUserByAccountNumber(funds.RecipienctACC)
+	recipient, err := u.Repository.FindUserByAccountNumber(funds.AccountNo)
 	if err != nil {
 		util.Response(c, "User not found", 400, "Bad request body", nil)
 		return

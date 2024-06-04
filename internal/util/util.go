@@ -42,7 +42,3 @@ func GenerateAccountNumber() (int, error) {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max-min+1) + min, nil
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> 73240816d1a0cc995a7e1d4f4e3e989e658e91b5

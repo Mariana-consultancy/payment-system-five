@@ -3,9 +3,9 @@ package server
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"payment-system-one/internal/api"
-	"payment-system-one/internal/middleware"
-	"payment-system-one/internal/ports"
+	"payment-system-five/internal/api"
+	"payment-system-five/internal/middleware"
+	"payment-system-five/internal/ports"
 	"time"
 )
 
@@ -28,8 +28,15 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 		r.POST("/login", handler.LoginUser)
 		r.POST("/admin/create", handler.CreateAdmin)
 		r.POST("/admin/login", handler.LoginAdmin)
-		r.POST("/funds/transfer",handler.TransferFunds)
-		r.POST("/funds/deposit",handler.DepositFunds)
+		// r.POST("/funds/deposit",handler.DepositFunds)
+	}
+
+	// authorizeUser authorizes all authorized users handlers
+	authorizeUser := r.Group("/user")
+	authorizeUser.Use(middleware.AuthorizeAdmin(repository.FindUserByEmail, repository.TokenInBlacklist))
+	{
+		authorizeUser.POST("/funds/transfer", handler.TransferFunds)
+
 	}
 
 	// authorizeAdmin authorizes all authorized users handlers
