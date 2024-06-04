@@ -2,8 +2,8 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	"payment-system-one/internal/models"
-	"payment-system-one/internal/util"
+	"payment-system-five/internal/models"
+	"payment-system-five/internal/util"
 )
 
 // Create an admin

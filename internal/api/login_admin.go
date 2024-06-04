@@ -6,9 +6,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
-	"payment-system-one/internal/middleware"
-	"payment-system-one/internal/models"
-	"payment-system-one/internal/util"
+	"payment-system-five/internal/middleware"
+	"payment-system-five/internal/models"
+	"payment-system-five/internal/util"
 )
 
 // Create a login system for an Admin

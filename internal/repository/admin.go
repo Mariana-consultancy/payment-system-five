@@ -1,6 +1,6 @@
 package repository
 
-import "payment-system-one/internal/models"
+import "payment-system-five/internal/models"
 
 func (p *Postgres) FindAdminByEmail(email string) (*models.Admin, error) {
 	admin := &models.Admin{}
