@@ -12,4 +12,9 @@ type Repository interface {
 	UpdateAdmin(admin *models.Admin) error
 	FindUserByAccountNumber(account_no int) (*models.User, error)
 	TransferFunds(user *models.User, recipient *models.User, amount float64) error
+	//ViewUserBalance(user *models.User) error
+	//ViewUserTransactionsHistory(transaction *models.Transaction) error
+	GetTransactionByAccountNumber(account_no int) (*[]models.Transaction, error)
+	//AdminViewAllTransactionsHistory(transaction *models.Transaction) error
+	//AdminViewUserBalance(user *models.User) error
 }

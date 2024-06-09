@@ -75,3 +75,12 @@ func (p *Postgres) FindUserByAccountNumber(account_no int) (*models.User, error)
 	}
 	return user, nil
 }
+
+func (p *Postgres) GetTransactionByAccountNumber(account_no int) (*[]models.Transaction, error) {
+	transaction := &[]models.Transaction{}
+
+	if err := p.DB.Where("account_no = ?", account_no).Find(&transaction).Error; err != nil {
+		return nil, err
+	}
+	return transaction, nil
+}

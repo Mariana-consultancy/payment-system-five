@@ -17,6 +17,7 @@ type User struct {
 	AvailableBalance float64 `json:"available_balance"`
 	Phone            string  `json:"phone"`
 	Address          string  `json:"address"`
+	
 }
 
 type LoginRequest struct {
@@ -31,6 +32,7 @@ type Transaction struct {
 	TransactionAmount float64   `json:"transaction_amount"`
 	TransactionDate   time.Time `json:"transaction_date"`
 	TransactionType   string    `json:"transaction_type"`
+	    
 }
 
 type TransferFunds struct {
@@ -40,4 +42,8 @@ type TransferFunds struct {
 
 type AddFunds struct {
 	Amount float64 `json:"amount"`
+}
+
+type UserAccountNumber struct {
+	AccountNo int `json:"account_no"`
 }

@@ -36,6 +36,8 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 	authorizeUser.Use(middleware.AuthorizeAdmin(repository.FindUserByEmail, repository.TokenInBlacklist))
 	{
 		authorizeUser.POST("/funds/transfer", handler.TransferFunds)
+		authorizeUser.POST("/funds/add", handler.AddFunds)
+		authorizeUser.GET("/funds/transactionhistory", handler.ViewUserTransactionsHistory)
 
 	}
 
@@ -44,6 +46,7 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 	authorizeAdmin.Use(middleware.AuthorizeAdmin(repository.FindUserByEmail, repository.TokenInBlacklist))
 	{
 		authorizeAdmin.GET("/user", handler.GetUserByEmail)
+		
 
 	}
 
